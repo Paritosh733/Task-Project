@@ -2,8 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:lottie/lottie.dart';
 import 'package:task_project/addUser.dart';
-
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'Model/boxes.dart';
 import 'Model/user_model.dart';
 import 'constants.dart';
@@ -33,6 +34,91 @@ class _MyHomePageState extends State<MyHomePage> {
     if (!Hive.isBoxOpen('user_model')) {
       await Hive.openBox<UserModel>('userModel');
     }
+  }
+
+  void showAnimationAndPop(BuildContext context, UserModel user) {
+    if (!context.mounted) return;
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent dismissing by tapping outside
+      builder: (context) => Center(
+        child: Dialog(
+          backgroundColor: Colors.white,
+          child: Container(
+            height: 210,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  "Are you sure you want to delete data ?",
+                  style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold),
+                ),
+                Lottie.asset(
+                  'assets/animation/delete.json', // Replace with your Lottie animation file
+                  width: 95,
+                  height: 95,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      width: 100,
+                      child: commonButton("No", () {
+                        Navigator.pop(context);
+                      }),
+                    ),
+                    Container(
+                      width: 100,
+                      child: commonButton("Yes", () {
+                        deleteUserInfo(user);
+                      }),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void showDeleteDialog(BuildContext context, UserModel user) {
+    AwesomeDialog(
+        context: context,
+        keyboardAware: true,
+        dismissOnBackKeyPress: false,
+        // padding: const EdgeInsets.all(20.0),
+        width: MediaQuery.sizeOf(context).width,
+        dialogType: DialogType.error,
+        animType: AnimType.SCALE,
+        title: 'Confirm Delete',
+        desc: 'Are you sure you want to delete data ?',
+        customHeader: Lottie.asset(
+          'assets/animation/delete.json', // Replace with your Lottie animation file
+          width: 95,
+          height: 95,
+        ),
+        titleTextStyle:
+            const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        descTextStyle: const TextStyle(
+          fontSize: 12,
+          color: Colors.black,
+        ),
+        btnCancelColor: Colors.blueAccent,
+        btnOkColor: Colors.blueAccent,
+        btnOkText: "Ok",
+        btnCancelText: "Cancel",
+        btnCancelOnPress: () {},
+        btnOkOnPress: () {
+          deleteUserInfo(user);
+        }).show();
   }
 
   @override
@@ -80,8 +166,10 @@ class _MyHomePageState extends State<MyHomePage> {
     print(userinfo.key);
     final box = Boxes.getUserInfo();
     box.delete(userinfo.key);
+    // Navigator.pop(context);
     userinfo.delete();
     setState(() {});
+
     return Future(() => true);
   }
 
@@ -131,7 +219,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 width: 10,
               ),
               commonIconButton(Icons.delete, () {
-                deleteUserInfo(user);
+                showDeleteDialog(context, user);
               }, false, "Delete")
             ],
           ),

@@ -30,11 +30,6 @@ class _AdduserPageState extends State<AdduserPage> {
   void initState() {
     super.initState();
     verifybox();
-    // Future.delayed(Duration.zero, () async {
-    //   if (!Hive.isBoxOpen('user_model')) {
-    //     await Hive.openBox<UserModel>('userModel');
-    //   } // Call your async function properly
-    // });
     if (widget.edit == "true") controlFields();
   }
 
@@ -54,7 +49,6 @@ class _AdduserPageState extends State<AdduserPage> {
   void validate() async {
     showValidate[0] = nameController.text.isEmpty;
     showValidate[1] = emailController.text.isEmpty;
-    showValidate[2] = salaryController.text.isEmpty;
     if (showValidate.any((_element) => _element == true)) {
       print("validate true");
     } else {
@@ -74,6 +68,7 @@ class _AdduserPageState extends State<AdduserPage> {
     // showAnimationAndPop(context);
     print(user_name);
     Navigator.of(context).pop();
+    showAnimationAndPop(context);
     return Future(() => true);
   }
 
@@ -89,29 +84,55 @@ class _AdduserPageState extends State<AdduserPage> {
     print(userinfo.email);
     print(email);
     Navigator.pop(context);
+    showAnimationAndPop(context);
   }
 
-  // void showAnimationAndPop(BuildContext context) {
-  //   showDialog(
-  //     context: context,
-  //     barrierDismissible: false, // Prevent dismissing by tapping outside
-  //     builder: (context) => Dialog(
-  //       backgroundColor: Colors.transparent,
-  //       child: Center(
-  //         child: Lottie.asset(
-  //           'assets/animation2.json', // Replace with your Lottie animation file
-  //           width: 150,
-  //           height: 150,
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  //
-  //   Future.delayed(const Duration(seconds: 5), () {
-  //     Navigator.pop(context); // Close the animation dialog
-  //     // Navigator.pop(context); // Pop the screen
-  //   });
-  // }
+  void showAnimationAndPop(BuildContext context) {
+    if (!context.mounted) return;
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent dismissing by tapping outside
+      builder: (context) => Center(
+        child: Dialog(
+          backgroundColor: Colors.white,
+          child: Container(
+            height: 210,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  "User Added Successfully!",
+                  style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold),
+                ),
+                Lottie.asset(
+                  'assets/animation/correct.json', // Replace with your Lottie animation file
+                  width: 95,
+                  height: 95,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      width: 100,
+                      child: commonButton("Ok", () {
+                        Navigator.pop(context);
+                      }),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   void dispose() {
