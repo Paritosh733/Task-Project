@@ -73,22 +73,36 @@ Widget commonButton(String buttonText, final voidCallback,
   );
 }
 
-Widget commonIconButton(icon, final voidCallback, bool edit) {
+Widget commonIconButton(icon, final voidCallback, bool edit, String title) {
   return InkWell(
     onTap: () {
       voidCallback();
     },
     child: Container(
       height: 30,
-      width: 30,
+      width: 70,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
           color: (icon == Icons.delete) ? Colors.redAccent : Colors.blueAccent),
       child: Center(
-        child: Icon(
-          icon,
-          color: Colors.white,
-          size: 14,
+        child: Row(
+          children: [
+            SizedBox(
+              width: 5,
+            ),
+            Icon(
+              icon,
+              color: Colors.white,
+              size: 14,
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            Text(
+              title,
+              style: TextStyle(color: Colors.white),
+            )
+          ],
         ),
       ),
     ),

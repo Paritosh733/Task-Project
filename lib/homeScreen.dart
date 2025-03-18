@@ -22,10 +22,17 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    verifybox();
     // Hive.openBox<UserModel>('usermodel');
     // print(Hive.isBoxOpen('usermodel'));
     // print(Hive.box("usermodel"));
     // Hive.openBox('user_model');
+  }
+
+  void verifybox() async {
+    if (!Hive.isBoxOpen('user_model')) {
+      await Hive.openBox<UserModel>('userModel');
+    }
   }
 
   @override
@@ -42,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
             final user = box.values.toList().cast<UserModel>();
             return SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -67,6 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future deleteUserInfo(UserModel userinfo) async {
+    verifybox();
     print(userinfo);
     print(userinfo.user_name);
     print(userinfo.key);
@@ -80,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget buildContent(String name, String email, user) {
     return Container(
       margin: EdgeInsets.all(10.0),
-      padding: EdgeInsets.all(10.0),
+      padding: EdgeInsets.all(20.0),
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12.0),
@@ -118,13 +126,13 @@ class _MyHomePageState extends State<MyHomePage> {
                               edit: "true",
                               data: user,
                             )));
-              }, true),
+              }, true, "Edit"),
               SizedBox(
                 width: 10,
               ),
               commonIconButton(Icons.delete, () {
                 deleteUserInfo(user);
-              }, false)
+              }, false, "Delete")
             ],
           ),
         ],
